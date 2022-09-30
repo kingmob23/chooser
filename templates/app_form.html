@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form method="post">
+        number of viewers:<br/>
+        <div id="users">
+            <input type="text" name="username"><br/>
+        </div>
+        <button type="button" id="addUserButton">+</button><br/>
+        <input type="submit">
+    </form>
+    <script>
+        document.getElementById('addUserButton').addEventListener('click', () => {
+            document.getElementById('users').innerHTML += `<input type="text" name="username"><br/>`;
+        });
+    </script>
+</body>
+</html>

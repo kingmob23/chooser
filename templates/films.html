@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>choose</title>
+
+    <!-- <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}"> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"> 
+  </head>
+  <body>
+    <h1>cross off unwanted movies!</h1>
+    <h2>here goes the nominees</h2>
+    <p>
+      <ul>
+        {% for i in f %}
+          <li id="{{i}}">{{ i }}</li>
+        {% endfor %}
+      </ul>
+    </p>
+  <script>
+    document.querySelectorAll('li').forEach(occurence => {
+      occurence.addEventListener('click', (e) => {
+        // let elementId = e.target.id;
+        e.target.setAttribute("style", "text-decoration:line-through;");
+      });
+    });
+    // var myLi = document.getElementById(elementId);
+    // myLi.setAttribute("style", "border-color:#FFFFFF;");
+  </script> 
+  </body>
+</html>
