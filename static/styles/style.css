@@ -1,0 +1,30 @@
+html {
+    font-size: 20px;
+    font-family: 'Quicksand', sans-serif;
+    background-color: #FFCB9A;
+    color: #2C3532;
+  }
+  
+body {
+    width: 60%;
+    margin: auto;
+    margin-top: 2%;
+    background-color: #D2E8E3;
+    padding: 0 20px 20px;
+    border-radius: 10px;
+  }
+  
+h1 {
+    font-size: 30px;
+    text-align: center;
+    color: #D8B08C;
+    /* padding: 30px 0 0; */
+    background-color: #0F6466;
+    border-radius: 0 0 20px 20px;
+  }
+  
+h2 {
+    font-size: 25px;
+  }
+  
+  

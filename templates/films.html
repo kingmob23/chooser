@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>choose</title>
 
-    <!-- <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}"> -->
+    <link rel="stylesheet"  type="text/css" href="{{url_for('.static', filename='styles/style.css')}}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +25,10 @@
     document.querySelectorAll('li').forEach(occurence => {
       occurence.addEventListener('click', (e) => {
         // let elementId = e.target.id;
-        e.target.setAttribute("style", "text-decoration:line-through;");
+        e.target.style.textDecoration = 'line-through';
+        e.target.style.backgroundColor = 'red';
+        e.target.style.display = 'inline';
+        e.target.style.borderRadius = '4px';
       });
     });
     // var myLi = document.getElementById(elementId);

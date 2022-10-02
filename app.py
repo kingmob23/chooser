@@ -31,7 +31,7 @@ class Movie(db.Model):
 
 @app.route('/')
 def homepage():
-    return render_template('homepage.html')
+    return render_template('index.html')
 
 
 @app.route('/my_shining_app', methods=['POST', 'GET'])
