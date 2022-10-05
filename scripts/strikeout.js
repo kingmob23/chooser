@@ -1,3 +1,3 @@
 let item = document.createElement('li')
-item.textContent = 'what za imya u tebya takoe duraczkoe'
+item.textContent = 'test_test'
 document.body.appendChild(item)
