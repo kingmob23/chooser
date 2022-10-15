@@ -34,36 +34,46 @@ def homepage():
     return render_template('index.html')
 
 
+def add_user(username):
+    chel = User(username=username)
+    db.session.add(chel)
+    films = get_list_of_films(username)
+    for i in films:
+        db.session.add(Movie(title=i, user=chel))
+    db.session.commit()
+
+
 @app.route('/my_shining_app', methods=['POST', 'GET'])
 def handling():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        return render_template('app_form.html')
 
-        unames = request.form.getlist('username')
+    unames = request.form.getlist('username')
 
-        films_intersec = set()
+    films_with_weight = {}
 
-        for username in unames:
+    for username in unames:
 
-            if not User.query.filter_by(username=username).first():
+        if not User.query.filter_by(username=username).first():
+            try:
+                add_user(username)
+            except ValueError:
+                return render_template('no_such_user.html')
 
-                chel = User(username=username)
-                db.session.add(chel)
+        for i in User.query.filter_by(username=username).first().movies:
+            if i.title not in films_with_weight:
+                films_with_weight[i.title] = 0
+            films_with_weight[i.title] += 1
 
-                films = get_list_of_films(username)
+    films_intersec = []
+    for i in films_with_weight:
+        if films_with_weight[i] == len(unames):
+            films_intersec.append(i)
 
-                for i in films:
-                    db.session.add(Movie(title=i, user=chel))
+    random.shuffle(films_intersec)
+    f = films_intersec[:len(unames) + 1]
 
-                db.session.commit()
-
-            for i in User.query.filter_by(username=username).first().movies:
-                films_intersec.add(i.title)
-
-        f = random.choices(list(films_intersec), k=len(unames) + 1)
-
-        return render_template('films.html', f=f)
-
-    return render_template('app_form.html')
+    return render_template('films.html', f=f)
 
 
 if __name__ == '__main__':
