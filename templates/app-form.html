@@ -9,16 +9,18 @@
 </head>
 <body>
     <form method="post">
-        number of viewers:<br/>
+        list of viewers:<br/>
         <div id="users">
-            <input type="text" name="username"><br/>
+            <input type="text" name="username0"> update my watchlist <input type="checkbox" name="update-db0"><br/>
         </div>
         <button type="button" id="addUserButton">+</button><br/>
         <input type="submit">
     </form>
     <script>
+        let counter = 1;
         document.getElementById('addUserButton').addEventListener('click', () => {
-            document.getElementById('users').innerHTML += `<input type="text" name="username"><br/>`;
+            document.getElementById('users').innerHTML += `<input type="text" name="username${counter}"> update my watchlist <input type="checkbox" name="update-db${counter}"><br/>`;
+            counter += 1;
         });
     </script>
 </body>
