@@ -5,36 +5,48 @@ import random
 from logic import get_list_of_films, html_construcktor
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/skip/PycharmProjects/film_chooser/films2.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/skip/1/me_vs_code/web-projects/film_chooser/watchlists.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 
-class User(db.Model):
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100))
-    movies = db.relationship('Movie', backref='user')
 
     def __repr__(self):
-        return f'<User "{self.username}">'
+        return f'<Users "{self.username}">'
 
 
-class Movie(db.Model):
+class Movies(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return f'<Movie "{self.title[:20]}...">'
+        return f'<Movies "{self.title[:20]}...">'
+
+
+class Linking(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id'), primary_key=True)
+    movie_id = db.Column(db.Integer, db.ForeignKey(
+        'movies.id'), primary_key=True)
+
+    def __repr__(self):
+        return f'<Linking "{self.user_id}">'
 
 
 def add_user(username):
-    chel = User(username=username)
-    db.session.add(chel)
-    films = get_list_of_films(username)
+    db.session.add(Users(username=username))
+    chel_id = Users.query.filter_by(username=username).first().id
+
+    films = set(get_list_of_films(username))
     for i in films:
-        db.session.add(Movie(title=i, user=chel))
+        db.session.add(Movies(title=i))
+        kinchik_id = Movies.query.filter_by(title=i).first().id
+        db.session.add(Linking(user_id=chel_id, movie_id=kinchik_id))
+
     db.session.commit()
 
 
@@ -47,7 +59,7 @@ def homepage():
 def handling():
     if request.method == 'GET':
         return render_template('app-form.html')
-    
+
     usernames = {}
     for i in range(len(request.form)):
         if len(request.form.getlist('update-db' + str(i))) != 0:
@@ -60,16 +72,22 @@ def handling():
         if usernames[username]:
             pass
 
-        if not User.query.filter_by(username=username).first():
+        if not Users.query.filter_by(username=username).first():
             try:
                 add_user(username)
             except ValueError:
                 return render_template('no-such-user.html')
 
-        for i in User.query.filter_by(username=username).first().movies:
-            if i.title not in films_with_weight:
-                films_with_weight[i.title] = 0
-            films_with_weight[i.title] += 1
+        uid = Users.query.filter_by(username=username).first().id
+        titles_of_user_films = []
+        for i in Linking.query.filter_by(user_id=uid).all():
+            titles_of_user_films.append(
+                Movies.query.filter_by(id=i.movie_id).first().title)
+
+        for i in titles_of_user_films:
+            if i not in films_with_weight:
+                films_with_weight[i] = 0
+            films_with_weight[i] += 1
 
     films_intersec = []
     for i in films_with_weight:
