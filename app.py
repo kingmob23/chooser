@@ -43,7 +43,8 @@ def add_user(username):
 
     films = set(get_list_of_films(username))
     for i in films:
-        db.session.add(Movies(title=i))
+        if not Movies.query.filter_by(title=i).first():
+            db.session.add(Movies(title=i))
         kinchik_id = Movies.query.filter_by(title=i).first().id
         db.session.add(Linking(user_id=chel_id, movie_id=kinchik_id))
 
@@ -67,18 +68,24 @@ def handling():
         elif len(request.form.getlist('username' + str(i))) != 0:
             usernames[request.form.getlist('username' + str(i))[0]] = False
 
+
+    films_intersec = []
     films_with_weight = {}
     for username in usernames:
-        if usernames[username]:
-            pass
+        if Users.query.filter_by(username=username).first():
+            uid = Users.query.filter_by(username=username).first().id
 
-        if not Users.query.filter_by(username=username).first():
+        if usernames[username]:
+            for i in Linking.query.filter_by(user_id=uid).all():
+                db.session.delete(i)
+            db.session.commit()
+
+        if not Users.query.filter_by(username=username).first() or not Linking.query.filter_by(user_id=uid).first():
             try:
                 add_user(username)
             except ValueError:
                 return render_template('no-such-user.html')
 
-        uid = Users.query.filter_by(username=username).first().id
         titles_of_user_films = []
         for i in Linking.query.filter_by(user_id=uid).all():
             titles_of_user_films.append(
@@ -89,10 +96,9 @@ def handling():
                 films_with_weight[i] = 0
             films_with_weight[i] += 1
 
-    films_intersec = []
-    for i in films_with_weight:
-        if films_with_weight[i] == len(usernames):
-            films_intersec.append(i)
+        for i in films_with_weight:
+            if films_with_weight[i] == len(usernames):
+                films_intersec.append(i)
 
     random.shuffle(films_intersec)
     f = films_intersec[:len(usernames) + 1]
