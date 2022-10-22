@@ -19,7 +19,9 @@
     <script>
         let counter = 1;
         document.getElementById('addUserButton').addEventListener('click', () => {
-            document.getElementById('users').innerHTML += `<input type="text" name="username${counter}"> update my watchlist <input type="checkbox" name="update-db${counter}"><br/>`;
+            const para = document.createElement("div");
+            para.innerHTML = `<input type="text" name="username${counter}"> update my watchlist <input type="checkbox" name="update-db>${counter}"><br/>`;
+            document.getElementById("users").appendChild(para);
             counter += 1;
         });
     </script>

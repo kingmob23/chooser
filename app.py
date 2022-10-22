@@ -96,9 +96,9 @@ def handling():
                 films_with_weight[i] = 0
             films_with_weight[i] += 1
 
-        for i in films_with_weight:
-            if films_with_weight[i] == len(usernames):
-                films_intersec.append(i)
+    for i in films_with_weight:
+        if films_with_weight[i] == len(usernames):
+            films_intersec.append(i)
 
     random.shuffle(films_intersec)
     f = films_intersec[:len(usernames) + 1]
