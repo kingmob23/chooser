@@ -61,13 +61,21 @@ def handling():
     if request.method == 'GET':
         return render_template('app-form.html')
 
+    # form unpacking
     usernames = {}
     for i in range(len(request.form)):
-        if len(request.form.getlist('update-db' + str(i))) != 0:
-            usernames[request.form.getlist('username' + str(i))[0]] = True
-        elif len(request.form.getlist('username' + str(i))) != 0:
-            usernames[request.form.getlist('username' + str(i))[0]] = False
-
+        username = request.form.getlist('username' + str(i))
+        update_db = request.form.getlist('update-db' + str(i))
+        no_watchlist = request.form.getlist('no-watchlist' + str(i))
+        if update_db and no_watchlist:
+            usernames[username[0]] = True, True
+        elif update_db:
+            usernames[username[0]] = True, False
+        elif no_watchlist:
+            usernames[username[0]] = False, True
+        elif username:
+            usernames[username[0]] = False, False
+    desired_weight = len(usernames)
 
     films_intersec = []
     films_with_weight = {}
@@ -75,17 +83,23 @@ def handling():
         if Users.query.filter_by(username=username).first():
             uid = Users.query.filter_by(username=username).first().id
 
-        if usernames[username]:
+        # update watchlist check
+        if usernames[username][0]:
             for i in Linking.query.filter_by(user_id=uid).all():
                 db.session.delete(i)
             db.session.commit()
+        
+        # no eatchlist check
+        if usernames[username][1]:
+            desired_weight -= 1
+            continue
 
+        # SQL DB fill
         if not Users.query.filter_by(username=username).first() or not Linking.query.filter_by(user_id=uid).first():
             try:
                 add_user(username)
             except ValueError:
                 return render_template('no-such-user.html')
-
         titles_of_user_films = []
         for i in Linking.query.filter_by(user_id=uid).all():
             titles_of_user_films.append(
@@ -97,7 +111,7 @@ def handling():
             films_with_weight[i] += 1
 
     for i in films_with_weight:
-        if films_with_weight[i] == len(usernames):
+        if films_with_weight[i] == desired_weight:
             films_intersec.append(i)
 
     random.shuffle(films_intersec)

@@ -11,7 +11,12 @@
     <form method="post">
         list of viewers:<br/>
         <div id="users">
-            <input type="text" name="username0"> update my watchlist <input type="checkbox" name="update-db0"><br/>
+            <input type="text" name="username0"> 
+            update my watchlist 
+            <input type="checkbox" name="update-db0"><br/> 
+            I dont have watchlist on letterboxd
+            <input type="checkbox" name="no-watchlist0"><br/>
+        </div>
         </div>
         <button type="button" id="addUserButton">+</button><br/>
         <input type="submit">
@@ -20,7 +25,11 @@
         let counter = 1;
         document.getElementById('addUserButton').addEventListener('click', () => {
             const para = document.createElement("div");
-            para.innerHTML = `<input type="text" name="username${counter}"> update my watchlist <input type="checkbox" name="update-db>${counter}"><br/>`;
+            para.innerHTML = `<input type="text" name="username${counter}"> 
+                update my watchlist 
+                <input type="checkbox" name="update-db>${counter}"><br/>
+                I dont have watchlist on letterboxd
+                <input type="checkbox" name="no-watchlist${counter}"><br/>`;
             document.getElementById("users").appendChild(para);
             counter += 1;
         });
