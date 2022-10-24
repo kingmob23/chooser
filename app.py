@@ -74,8 +74,12 @@ def handling():
         elif no_watchlist:
             usernames[username[0]] = False, True
         elif username:
-            usernames[username[0]] = False, False
+            if username[0]:
+                usernames[username[0]] = False, False
+            else:
+                return render_template('empty-form.html')
     desired_weight = len(usernames)
+    print(usernames)
 
     films_intersec = []
     films_with_weight = {}
