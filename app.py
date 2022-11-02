@@ -81,6 +81,7 @@ def handling():
     desired_weight = len(usernames)
     print(usernames)
 
+    # list of needed films forming, main function of the application
     films_intersec = []
     films_with_weight = {}
     for username in usernames:
